@@ -78,6 +78,7 @@ export default {
     }
   },
   beforeMount() {
+    this.feeds={ name: "Named feed", link: "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss" }
     this.loadFeeds()
   }
 };
