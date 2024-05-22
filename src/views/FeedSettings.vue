@@ -10,7 +10,7 @@
       <tr>
         <th>Name</th>
         <th>Link</th>
-        <th>Actions</th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -25,7 +25,7 @@
       </tbody>
     </table>
   </div>
-  {{name}}
+  {{ name }}
 </template>
 
 <script>
@@ -38,21 +38,24 @@ export default {
   data() {
     return {
       feeds: [
-        { name: "Named feed", link: "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss" },
+        {
+          name: "Named feed",
+          link: "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss"
+        },
       ],
-      name:'test',
-      link:''
+      name: 'test',
+      link: ''
     };
   },
   methods: {
 
     saveNewFeed(name, link) {
-      this.feeds.push({ name: name, link: link });
-      this.name=name
+      this.feeds.push({name: name, link: link});
+      this.name = name
       this.saveFeeds()
     },
     editFeed(index, name, link) {
-      this.feeds[index] = { name, link };
+      this.feeds[index] = {name, link};
       this.saveFeeds();
     },
     deleteFeed(index) {
@@ -60,25 +63,24 @@ export default {
       this.saveFeeds()
     },
     saveFeeds() {
-      localStorage.setItem('feeds', JSON.stringify(this.feeds));
+      // localStorage.setItem('feeds', JSON.stringify(this.feeds));
     },
     loadFeeds() {
-      this.feeds = JSON.parse(localStorage.getItem('feeds'));
-      const savedFeeds = localStorage.getItem('feeds');
-      this.feeds = JSON.parse(savedFeeds);
+      // this.feeds = JSON.parse(localStorage.getItem('feeds'));
+      // const savedFeeds = localStorage.getItem('feeds');
+      // this.feeds = JSON.parse(savedFeeds);
     },
     openAddFeedModal() {
       this.$refs.addSourceModalRef.$refs.modalRef.openModal()
 
     },
-    openEditFeedModal(index){
+    openEditFeedModal(index) {
       this.$refs.editFeedModalRef.$refs.modalRef.openModal()
-      this.$refs.editFeedModalRef.name=this.feeds[index].name;
-      this.$refs.editFeedModalRef.link=this.feeds[index].name;
+      this.$refs.editFeedModalRef.name = this.feeds[index].name;
+      this.$refs.editFeedModalRef.link = this.feeds[index].link;
     }
   },
   beforeMount() {
-    this.feeds={ name: "Named feed", link: "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss" }
     this.loadFeeds()
   }
 };
