@@ -1,6 +1,7 @@
 <template>
   <AddSourceModal ref="addSourceModalRef" @event-save-new-feed="saveNewFeed"/>
   <EditFeedModal ref="editFeedModalRef" @event-edit-feed="editFeed"/>
+  <DeleteFeedModal ref="deleteFeedModalRef" @event-delete-feed="deleteFeed"/>
   <div class="table-container">
     <div class="header">
       <button class="add-button" @click="openAddFeedModal">Add Feeds</button>
@@ -17,9 +18,10 @@
       <tr v-for="(feed, index) in feeds" :key="index">
         <td>{{ feed.name }}</td>
         <td><a :href="feed.link" target="_blank">{{ feed.link }}</a></td>
-        <td>
+        <td v-if="feed.name==='default'">default feed</td>
+        <td v-if="feed.name!=='default'">
           <button class="action-button" @click="openEditFeedModal(index)">Edit</button>
-          <button class="action-button" @click="deleteFeed(index)">Delete</button>
+          <button class="action-button" @click="openDeleteFeedModal(index)">Delete</button>
         </td>
       </tr>
       </tbody>
@@ -31,15 +33,16 @@
 <script>
 import AddSourceModal from "@/components/AddSourceModal.vue";
 import EditFeedModal from "@/components/EditFeedModal.vue";
+import DeleteFeedModal from "@/components/DeleteFeedModal.vue";
 
 
 export default {
-  components: {EditFeedModal, AddSourceModal},
+  components: {DeleteFeedModal, EditFeedModal, AddSourceModal},
   data() {
     return {
       feeds: [
         {
-          name: "Named feed",
+          name: "initial content",
           link: "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss"
         },
       ],
@@ -50,7 +53,7 @@ export default {
   methods: {
 
     saveNewFeed(name, link) {
-            this.feeds.push({name: name, link: link});
+      this.feeds.push({name: name, link: link});
       this.name = name
       this.saveFeeds()
 
@@ -80,6 +83,12 @@ export default {
       this.$refs.editFeedModalRef.index = index;
       this.$refs.editFeedModalRef.name = this.feeds[index].name;
       this.$refs.editFeedModalRef.link = this.feeds[index].link;
+    },
+    openDeleteFeedModal(index){
+      this.$refs.deleteFeedModalRef.$refs.modalRef.openModal()
+      this.$refs.deleteFeedModalRef.name = this.feeds[index].name;
+      this.$refs.deleteFeedModalRef.link = this.feeds[index].link;
+      this.$refs.deleteFeedModalRef.index = index;
     }
   },
   beforeMount() {
