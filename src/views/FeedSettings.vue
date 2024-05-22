@@ -1,147 +1,88 @@
 <template>
-  <div>
-    <table v-if="rssFeeds.length" class="table">
+  <AddSourceModal ref="addSourceModalRef" @event-save-new-feed="saveNewFeed"/>
+  <EditFeedModal ref="editFeedModalRef" @event-edit-feed="editFeed"/>
+  <div class="table-container">
+    <div class="header">
+      <button class="add-button" @click="openAddFeedModal">Add Feeds</button>
+    </div>
+    <table class="styled-table">
       <thead>
       <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Link</th>
-        <th scope="col">Actions</th>
+        <th>Name</th>
+        <th>Link</th>
+        <th>Actions</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="feed in rssFeeds" :key="feed.id">
+      <tr v-for="(feed, index) in feeds" :key="index">
         <td>{{ feed.name }}</td>
         <td><a :href="feed.link" target="_blank">{{ feed.link }}</a></td>
         <td>
-          <button class="button me-md-2" @click="openEditModal(feed)"><font-awesome-icon :icon="['fas', 'edit']" /></button>
-          <button class="button" @click="openDeleteModal(feed)"><font-awesome-icon :icon="['fas', 'trash']" /></button>
+          <button class="action-button" @click="openEditFeedModal(index)">Edit</button>
+          <button class="action-button" @click="deleteFeed(index)">Delete</button>
         </td>
       </tr>
       </tbody>
     </table>
-
-    <button class="button mt-3" @click="openAddModal">Add RSS Feed</button>
-
-    <!-- Edit Modal -->
-    <div v-if="isEditModalOpen" class="modal">
-      <div class="modal-content">
-        <h3>Edit RSS Feed</h3>
-        <label>Name:</label>
-        <input v-model="currentFeed.name" />
-        <label>Link:</label>
-        <input v-model="currentFeed.link" />
-        <button @click="updateFeed">Save</button>
-        <button @click="closeEditModal">Cancel</button>
-      </div>
-    </div>
-
-    <!-- Delete Modal -->
-    <div v-if="isDeleteModalOpen" class="modal">
-      <div class="modal-content">
-        <h3>Delete RSS Feed</h3>
-        <p>Are you sure you want to delete {{ currentFeed.name }}?</p>
-        <button @click="deleteFeed">Yes</button>
-        <button @click="closeDeleteModal">No</button>
-      </div>
-    </div>
-
-    <!-- Add Modal -->
-    <div v-if="isAddModalOpen" class="modal">
-      <div class="modal-content">
-        <h3>Add RSS Feed</h3>
-        <label>Name:</label>
-        <input v-model="newFeed.name" />
-        <label>Link:</label>
-        <input v-model="newFeed.link" />
-        <button @click="addFeed">Add</button>
-        <button @click="closeAddModal">Cancel</button>
-      </div>
-    </div>
   </div>
+  {{name}}
 </template>
 
 <script>
+import AddSourceModal from "@/components/AddSourceModal.vue";
+import EditFeedModal from "@/components/EditFeedModal.vue";
+
+
 export default {
+  components: {EditFeedModal, AddSourceModal},
   data() {
     return {
-      rssFeeds: [
-        // Example feeds
-        { id: 1, name: 'Feed 1', link: 'http://feed1.com/rss' },
-        { id: 2, name: 'Feed 2', link: 'http://feed2.com/rss' },
+      feeds: [
+        { name: "Named feed", link: "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss" },
       ],
-      isEditModalOpen: false,
-      isDeleteModalOpen: false,
-      isAddModalOpen: false,
-      currentFeed: {},
-      newFeed: { name: '', link: '' },
+      name:'test',
+      link:''
     };
   },
   methods: {
-    openEditModal(feed) {
-      this.currentFeed = { ...feed };
-      this.isEditModalOpen = true;
+
+    saveNewFeed(name, link) {
+      this.feeds.push({ name: name, link: link });
+      this.name=name
+      this.saveFeeds()
     },
-    closeEditModal() {
-      this.isEditModalOpen = false;
-      this.currentFeed = {};
+    editFeed(index, name, link) {
+      this.feeds[index] = { name, link };
+      this.saveFeeds();
     },
-    updateFeed() {
-      // Find the feed and update it
-      const index = this.rssFeeds.findIndex(f => f.id === this.currentFeed.id);
-      if (index !== -1) {
-        this.$set(this.rssFeeds, index, this.currentFeed);
-      }
-      this.closeEditModal();
+    deleteFeed(index) {
+      this.feeds.splice(index, 1);
+      this.saveFeeds()
     },
-    openDeleteModal(feed) {
-      this.currentFeed = { ...feed };
-      this.isDeleteModalOpen = true;
+    saveFeeds() {
+      localStorage.setItem('feeds', JSON.stringify(this.feeds));
     },
-    closeDeleteModal() {
-      this.isDeleteModalOpen = false;
-      this.currentFeed = {};
+    loadFeeds() {
+      this.feeds = JSON.parse(localStorage.getItem('feeds'));
+      const savedFeeds = localStorage.getItem('feeds');
+      this.feeds = JSON.parse(savedFeeds);
     },
-    deleteFeed() {
-      this.rssFeeds = this.rssFeeds.filter(f => f.id !== this.currentFeed.id);
-      this.closeDeleteModal();
+    openAddFeedModal() {
+      this.$refs.addSourceModalRef.$refs.modalRef.openModal()
+
     },
-    openAddModal() {
-      this.isAddModalOpen = true;
-    },
-    closeAddModal() {
-      this.isAddModalOpen = false;
-      this.newFeed = { name: '', link: '' };
-    },
-    addFeed() {
-      const newId = Math.max(...this.rssFeeds.map(f => f.id)) + 1;
-      this.rssFeeds.push({ id: newId, ...this.newFeed });
-      this.closeAddModal();
-    },
+    openEditFeedModal(index){
+      this.$refs.editFeedModalRef.$refs.modalRef.openModal()
+      this.$refs.editFeedModalRef.name=this.feeds[index].name;
+      this.$refs.editFeedModalRef.link=this.feeds[index].name;
+    }
   },
+  beforeMount() {
+    this.loadFeeds()
+  }
 };
 </script>
 
-<style>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-}
+<style scoped>
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 300px;
-}
-
-button {
-  margin: 5px;
-}
 </style>
