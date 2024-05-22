@@ -50,11 +50,13 @@ export default {
   methods: {
 
     saveNewFeed(name, link) {
-      this.feeds.push({name: name, link: link});
+            this.feeds.push({name: name, link: link});
       this.name = name
       this.saveFeeds()
+
     },
     editFeed(index, name, link) {
+      this.name=name
       this.feeds[index] = {name, link};
       this.saveFeeds();
     },
@@ -63,19 +65,19 @@ export default {
       this.saveFeeds()
     },
     saveFeeds() {
-      // localStorage.setItem('feeds', JSON.stringify(this.feeds));
+      localStorage.setItem('feeds', JSON.stringify(this.feeds));
     },
     loadFeeds() {
-      // this.feeds = JSON.parse(localStorage.getItem('feeds'));
-      // const savedFeeds = localStorage.getItem('feeds');
-      // this.feeds = JSON.parse(savedFeeds);
+      this.feeds = JSON.parse(localStorage.getItem('feeds'));
+      const savedFeeds = localStorage.getItem('feeds');
+      this.feeds = JSON.parse(savedFeeds);
     },
     openAddFeedModal() {
       this.$refs.addSourceModalRef.$refs.modalRef.openModal()
-
     },
     openEditFeedModal(index) {
       this.$refs.editFeedModalRef.$refs.modalRef.openModal()
+      this.$refs.editFeedModalRef.index = index;
       this.$refs.editFeedModalRef.name = this.feeds[index].name;
       this.$refs.editFeedModalRef.link = this.feeds[index].link;
     }

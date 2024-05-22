@@ -47,6 +47,7 @@ export default {
     return {
       name: '',
       link: '',
+      index:0,
       message: '',
       formInvalid: false
     }
@@ -58,7 +59,7 @@ export default {
       if (this.name == "" || this.link == "") {
         this.displayErrormessage()
       } else {
-        this.$emit('event-save-new-feed', this.name, this.link);
+        this.$emit('event-edit-feed',this.index, this.name, this.link);
         this.resetForm()
         this.closeModal()
       }
