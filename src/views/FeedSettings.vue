@@ -18,8 +18,8 @@
       <tr v-for="(feed, index) in feeds" :key="index">
         <td>{{ feed.name }}</td>
         <td><a :href="feed.link" target="_blank">{{ feed.link }}</a></td>
-        <td v-if="feed.name==='default'">default feed</td>
-        <td v-if="feed.name!=='default'">
+        <td v-if="feed.name==='initial content'"></td>
+        <td v-if="feed.name!=='initial content'">
           <button class="action-button" @click="openEditFeedModal(index)">Edit</button>
           <button class="action-button" @click="openDeleteFeedModal(index)">Delete</button>
         </td>
@@ -27,7 +27,6 @@
       </tbody>
     </table>
   </div>
-  {{ name }}
 </template>
 
 <script>
@@ -71,9 +70,7 @@ export default {
       localStorage.setItem('feeds', JSON.stringify(this.feeds));
     },
     loadFeeds() {
-      this.feeds = JSON.parse(localStorage.getItem('feeds'));
-      const savedFeeds = localStorage.getItem('feeds');
-      this.feeds = JSON.parse(savedFeeds);
+        this.feeds = JSON.parse(localStorage.getItem('feeds'));
     },
     openAddFeedModal() {
       this.$refs.addSourceModalRef.$refs.modalRef.openModal()

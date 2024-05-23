@@ -1,53 +1,117 @@
 <template>
-  <div>
-    <h1>{{ feedTitle }}</h1>
-    <button @click="getFeeds">Press for feed</button>
+  <button @click="getFeeds">Press for feed</button>
+  <button @click="getFeeds">Press for feed</button>
+  <div v-for="content in contents">
+    <h1>Feed name:{{ content.feedTitle }}</h1>
     <div class="news-grid">
-      <div v-for="item in feeds" :key="item.guid" class="news-item">
-        <h2>{{ item.title }}</h2>
-        <p>{{ item.description }}</p>
-        <a :href="item.link" target="_blank">Read more</a>
-        <p><strong>Author:</strong> {{ item.author }}</p>
-        <p><strong>Published on:</strong> {{ new Date(item.pubDate).toLocaleString() }}</p>
-      </div>
+      <a v-for="item in content.news" :key="item.guid" :href="item.link" target="_blank" class="news-item">
+        <div class="content">
+          <div class="image-container">
+            <img :src="item.imageUrl" alt="News image" v-if="item.imageUrl"/>
+          </div>
+          <div class="text-container">
+            <div class="headline">
+              <h2>{{ item.title }}</h2>
+            </div>
+            <div class="description-box">
+              <p class="description">{{ item.description }}</p>
+            </div>
+            <div class="info-box">
+              <div class="info">
+                <p><strong>Author:</strong> {{ item.author }}</p>
+                <p><strong>Published on:</strong> {{ new Date(item.pubDate).toLocaleString() }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { parseStringPromise } from 'xml2js';
+import {parseStringPromise} from 'xml2js';
 
 export default {
   data() {
     return {
-      feedTitle: '',
-      feeds: [],
+      feeds:[],
+      contents: [
+        {
+          feedTitle:'',
+          news: []
+        }
+
+      ],
     };
   },
   methods: {
-    async getFeeds() {
-      try {
-        let {data} = await axios.get('https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss');
-        const parsedData = await parseStringPromise(data);
-        this.feedTitle = parsedData.rss.channel[0].title[0];
-        this.feeds = parsedData.rss.channel[0].item.map(item => ({
-          title: item.title[0],
-          link: item.link[0],
-          guid: item.guid[0],
-          pubDate: item.pubDate[0],
-          description: item.description[0],
-          author: item.author ? item.author[0] : 'Unknown',
-        }));
-      } catch (error) {
-        console.error('Error fetching and parsing the RSS feed:', error);
+    getFeeds: async function () {
+      this.contents = []; // Clear contents before loading new feeds
+      for (const feed of this.feeds) {
+        try {
+          let { data } = await axios.get(feed.link);
+          const parsedData = await parseStringPromise(data);
+          this.contents.push({
+            feedTitle: parsedData.rss.channel[0].title[0],
+            news: parsedData.rss.channel[0].item.map(item => ({
+              title: item.title[0],
+              link: item.link[0],
+              guid: item.guid[0],
+              pubDate: item.pubDate[0],
+              description: item.description[0],
+              author: item.author ? item.author[0] : 'Unknown',
+              imageUrl: item['media:content'] ? item['media:content'][0].$.url : ''
+            }))
+          });
+        } catch (error) {
+          console.error('Error fetching and parsing the RSS feed:', error);
+        }
       }
-    }
+    },
+    loadFeeds() {
+      this.feeds = JSON.parse(localStorage.getItem('feeds'));
+    },
+  },
+  beforeMount() {
+    this.loadFeeds()
   }
 };
 </script>
 
 <style scoped>
+.text-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 200px; /* Maximum height for the text container */
+  overflow: hidden; /* Hide overflow */
+}
+
+.headline {
+
+  padding: 8px;
+  border-radius: 8px;
+  max-height: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description-box {
+
+  padding: 8px;
+  border-radius: 8px;
+  flex: 1; /* Fill remaining space */
+  overflow: hidden; /* Hide overflow */
+}
+
+.info-box {
+  padding: 8px;
+  border-radius: 8px;
+
+  bottom: 0;
+}
+
 h1 {
   font-size: 2em;
   margin-bottom: 0.5em;
@@ -55,6 +119,16 @@ h1 {
 
 button {
   margin-bottom: 1em;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
 
 .news-grid {
@@ -66,17 +140,105 @@ button {
 .news-item {
   border: 1px solid #ccc;
   border-radius: 8px;
+  background-color: #f9f9f9;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, background-color 0.2s;
+  max-height: 400px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #e0f7fa;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure the text container fills the height */
   padding: 16px;
-  background-color: #fff;
+  background-color: transparent; /* Transparent background */
+  flex-grow: 1; /* Ensure it takes up available space */
+}
+
+.headline {
+  padding: 8px;
+  border-radius: 8px;
+  flex-shrink: 0; /* Prevent headline from shrinking */
+}
+
+.description-box {
+  padding: 8px;
+  border-radius: 8px;
+  flex-grow: 1; /* Allow the description box to take up remaining space */
+  overflow: hidden; /* Hide overflow */
+}
+
+.info-box {
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: auto; /* Push info box to the bottom */
+  flex-shrink: 0; /* Prevent info box from shrinking */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure the content fills the height of the news item */
+}
+
+.image-container {
+  max-height: 30%; /* Limit image height to 30% of news item height */
+  width: auto;
+  overflow: hidden;
+}
+
+img {
+  max-height: 100%; /* Ensure the image respects the container's max-height */
+  width: auto;
+  border-radius: 8px;
+}
+
+.news-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, background-color 0.2s;
+  max-height: 400px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #e0f7fa;
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin: 0 0 0.5em 0;
+  color: #333;
 }
 
-p {
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Number of lines to show */
+  -webkit-box-orient: vertical;
   margin: 0.5em 0;
+}
+
+.info p {
+  margin: 0.2em 0;
 }
 
 a {
@@ -84,8 +246,4 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: underline;
-}
 </style>
-
