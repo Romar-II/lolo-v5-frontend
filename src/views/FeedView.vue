@@ -1,8 +1,13 @@
 <template>
-  <button @click="getFeeds">Press for feed</button>
-  <button @click="getFeeds">Press for feed</button>
-  <div v-for="content in contents">
-    <h1>Feed name:{{ content.feedTitle }}</h1>
+  <div>
+    <button @click="getFeeds">Press for feed</button>
+    <select v-model="selectedCategory" @change="filterNewsByCategories">
+      <option value="">All Categories</option>
+      <option v-for="category in availableCategories" :key="category" :value="category">{{ category }}</option>
+    </select>
+  </div>
+  <div v-for="content in filteredContents" :key="content.feedTitle">
+    <h1>Feed name: {{ content.feedTitle }}</h1>
     <div class="news-grid">
       <a v-for="item in content.news" :key="item.guid" :href="item.link" target="_blank" class="news-item">
         <div class="content">
@@ -31,24 +36,22 @@
 
 <script>
 import axios from 'axios';
-import {parseStringPromise} from 'xml2js';
+import { parseStringPromise } from 'xml2js';
 
 export default {
   data() {
     return {
-      feeds:[],
-      contents: [
-        {
-          feedTitle:'',
-          news: []
-        }
-
-      ],
+      feeds: [],
+      contents: [],
+      filteredContents: [],
+      availableCategories: [],
+      selectedCategory: ''
     };
   },
   methods: {
     getFeeds: async function () {
       this.contents = [];
+      this.availableCategories = [];
       for (const feed of this.feeds) {
         try {
           let { data } = await axios.get(feed.link);
@@ -68,13 +71,33 @@ export default {
           };
           this.sortByDate(feedContent.news); // Sort the news by date
           this.contents.push(feedContent);
+
+          // Update available categories
+          feedContent.news.forEach(item => {
+            item.categories.forEach(category => {
+              if (category &&!this.availableCategories.includes(category)) {
+                this.availableCategories.push(category);
+              }
+            });
+          });
         } catch (error) {
           console.error('Error fetching and parsing the RSS feed:', error);
         }
       }
+      this.filterNewsByCategories(); // Filter news after fetching
     },
     sortByDate(news) {
       news.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+    },
+    filterNewsByCategories() {
+      if (this.selectedCategory === '') {
+        this.filteredContents = this.contents;
+      } else {
+        this.filteredContents = this.contents.map(content => ({
+          ...content,
+          news: content.news.filter(item => item.categories.includes(this.selectedCategory))
+        }));
+      }
     },
     loadFeeds() {
       this.feeds = JSON.parse(localStorage.getItem('feeds'));
