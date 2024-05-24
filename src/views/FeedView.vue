@@ -69,10 +69,9 @@ export default {
               categories: item.category ? item.category.map(cat => cat._) : []
             }))
           };
-          this.sortByDate(feedContent.news); // Sort the news by date
+          this.sortByDate(feedContent.news);
           this.contents.push(feedContent);
 
-          // Update available categories
           feedContent.news.forEach(item => {
             item.categories.forEach(category => {
               if (category &&!this.availableCategories.includes(category)) {
@@ -84,7 +83,7 @@ export default {
           console.error('Error fetching and parsing the RSS feed:', error);
         }
       }
-      this.filterNewsByCategories(); // Filter news after fetching
+      this.filterNewsByCategories();
     },
     sortByDate(news) {
       news.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));

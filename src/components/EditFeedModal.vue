@@ -36,7 +36,6 @@
 
 <script>
 
-import router from "@/router";
 import Modal from "@/components/Modal.vue";
 
 

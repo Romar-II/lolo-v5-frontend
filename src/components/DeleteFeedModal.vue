@@ -3,7 +3,6 @@
     <template #title>
       Delete feed?
     </template>
-<!--//todo: ilusamaks-->
 
     <template #body>
       <p>
