@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     getFeeds: async function () {
-      this.contents = []; // Clear contents before loading new feeds
+      this.contents = [];
       for (const feed of this.feeds) {
         try {
           let { data } = await axios.get(feed.link);
@@ -84,8 +84,8 @@ export default {
 .text-container {
   display: flex;
   flex-direction: column;
-  max-height: 200px; /* Maximum height for the text container */
-  overflow: hidden; /* Hide overflow */
+  max-height: 200px;
+  overflow: hidden;
 }
 
 .headline {

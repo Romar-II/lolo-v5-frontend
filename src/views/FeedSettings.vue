@@ -18,8 +18,8 @@
       <tr v-for="(feed, index) in feeds" :key="index">
         <td>{{ feed.name }}</td>
         <td><a :href="feed.link" target="_blank">{{ feed.link }}</a></td>
-        <td v-if="feed.name==='initial content'"></td>
-        <td v-if="feed.name!=='initial content'">
+        <td v-if="feed.name==='Initial content'"></td>
+        <td v-if="feed.name!=='Initial content'">
           <button class="action-button" @click="openEditFeedModal(index)">Edit</button>
           <button class="action-button" @click="openDeleteFeedModal(index)">Delete</button>
         </td>
