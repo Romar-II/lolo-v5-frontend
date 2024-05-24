@@ -53,7 +53,7 @@ export default {
         try {
           let { data } = await axios.get(feed.link);
           const parsedData = await parseStringPromise(data);
-          this.contents.push({
+          let feedContent = {
             feedTitle: parsedData.rss.channel[0].title[0],
             news: parsedData.rss.channel[0].item.map(item => ({
               title: item.title[0],
@@ -62,20 +62,26 @@ export default {
               pubDate: item.pubDate[0],
               description: item.description[0],
               author: item.author ? item.author[0] : 'Unknown',
-              imageUrl: item['media:content'] ? item['media:content'][0].$.url : ''
+              imageUrl: item['media:content'] ? item['media:content'][0].$.url : '',
+              categories: item.category ? item.category.map(cat => cat._) : []
             }))
-          });
+          };
+          this.sortByDate(feedContent.news); // Sort the news by date
+          this.contents.push(feedContent);
         } catch (error) {
           console.error('Error fetching and parsing the RSS feed:', error);
         }
       }
+    },
+    sortByDate(news) {
+      news.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
     },
     loadFeeds() {
       this.feeds = JSON.parse(localStorage.getItem('feeds'));
     },
   },
   beforeMount() {
-    this.loadFeeds()
+    this.loadFeeds();
   }
 };
 </script>
