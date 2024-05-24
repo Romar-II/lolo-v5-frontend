@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="getFeeds">Press for feed</button>
+    <h1>filter</h1>
     <select v-model="selectedCategory" @change="filterNewsByCategories">
       <option value="">All Categories</option>
       <option v-for="category in availableCategories" :key="category" :value="category">{{ category }}</option>
@@ -105,6 +105,7 @@ export default {
   },
   beforeMount() {
     this.loadFeeds();
+    this.getFeeds()
   }
 };
 </script>
