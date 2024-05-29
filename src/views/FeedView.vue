@@ -116,7 +116,7 @@ export default {
       }
     },
     loadFeeds() {
-      this.feeds = JSON.parse(localStorage.getItem('feeds'));
+      this.feeds = JSON.parse(localStorage.getItem('feeds'))|| [];
     },
   },
   beforeMount() {
