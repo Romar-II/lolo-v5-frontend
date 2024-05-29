@@ -6,6 +6,9 @@
       <option v-for="category in availableCategories" :key="category" :value="category">{{ category }}</option>
     </select>
   </div>
+  <button @click="sendToMercuryAPI">
+    send to Mercury
+  </button>
   <div v-for="content in filteredContents" :key="content.feedTitle">
     <h1>Feed name: {{ content.feedTitle }}</h1>
     <div class="news-grid">
@@ -58,15 +61,18 @@ export default {
           const parsedData = await parseStringPromise(data);
           let feedContent = {
             feedTitle: parsedData.rss.channel[0].title[0],
-            news: parsedData.rss.channel[0].item.map(item => ({
-              title: item.title[0],
-              link: item.link[0],
-              guid: item.guid[0],
-              pubDate: item.pubDate[0],
-              description: item.description[0],
-              author: item.author ? item.author[0] : 'Unknown',
-              imageUrl: item['media:content'] ? item['media:content'][0].$.url : '',
-              categories: item.category ? item.category.map(cat => cat._) : []
+            news: await Promise.all(parsedData.rss.channel[0].item.map(async item => {
+              const content = await this.fetchContentFromMercury(item.link[0]);
+              return {
+                title: item.title[0],
+                link: item.link[0],
+                guid: item.guid[0],
+                pubDate: item.pubDate[0],
+                description: content,
+                author: item.author ? item.author[0] : 'Unknown',
+                imageUrl: item['media:content'] ? item['media:content'][0].$.url : '',
+                categories: item.category ? item.category.map(cat => cat._) : []
+              };
             }))
           };
           this.sortByDate(feedContent.news);
@@ -84,6 +90,17 @@ export default {
         }
       }
       this.filterNewsByCategories();
+    },
+    async fetchContentFromMercury(url) {
+      try {
+        const response = await axios.post('https://uptime-mercury-api.azurewebsites.net/webparser', {
+          url: url
+        });
+        return response.data.excerpt;
+      } catch (error) {
+        console.error('Error fetching content from Mercury API:', error);
+        return 'Error loading content';
+      }
     },
     sortByDate(news) {
       news.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
