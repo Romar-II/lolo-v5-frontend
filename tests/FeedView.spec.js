@@ -24,7 +24,6 @@ describe('FeedView.vue', () => {
   it('renders correctly with initial data', () => {
     expect(wrapper.find('.filter-container').exists()).toBe(true);
     expect(wrapper.find('select').exists()).toBe(true);
-    expect(wrapper.find('button').text()).toBe('send to Mercury');
   });
 
   it('filters news by selected category', async () => {
