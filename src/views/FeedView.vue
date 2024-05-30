@@ -6,9 +6,6 @@
       <option v-for="category in availableCategories" :key="category" :value="category">{{ category }}</option>
     </select>
   </div>
-  <button @click="sendToMercuryAPI">
-    send to Mercury
-  </button>
   <div v-for="content in filteredContents" :key="content.feedTitle">
     <h1>Feed name: {{ content.feedTitle }}</h1>
     <div class="news-grid">
