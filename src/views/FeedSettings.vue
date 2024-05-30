@@ -34,62 +34,61 @@ import AddSourceModal from "@/components/AddSourceModal.vue";
 import EditFeedModal from "@/components/EditFeedModal.vue";
 import DeleteFeedModal from "@/components/DeleteFeedModal.vue";
 
-
 export default {
   components: {DeleteFeedModal, EditFeedModal, AddSourceModal},
   data() {
     return {
-      feeds: [
-        {
-          name: "initial content",
-          link: "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss"
-        },
-      ],
+      feeds: [],
       name: 'test',
       link: ''
     };
   },
   methods: {
-
     saveNewFeed(name, link) {
-      this.feeds.push({name: name, link: link});
-      this.name = name
-      this.saveFeeds()
-
+      this.feeds.push({ name, link });
+      this.name = name;
+      this.saveFeeds();
     },
     editFeed(index, name, link) {
-      this.name=name
-      this.feeds[index] = {name, link};
+      this.name = name;
+      this.feeds[index] = { name, link };
       this.saveFeeds();
     },
     deleteFeed(index) {
       this.feeds.splice(index, 1);
-      this.saveFeeds()
+      this.saveFeeds();
     },
     saveFeeds() {
       localStorage.setItem('feeds', JSON.stringify(this.feeds));
     },
     loadFeeds() {
-        this.feeds = JSON.parse(localStorage.getItem('feeds'));
+      try {
+        const storedFeeds = JSON.parse(localStorage.getItem('feeds'));
+        if (storedFeeds) {
+          this.feeds = storedFeeds;
+        }
+      } catch (error) {
+        console.error('Error loading feeds from localStorage', error);
+      }
     },
     openAddFeedModal() {
-      this.$refs.addSourceModalRef.$refs.modalRef.openModal()
+      this.$refs.addSourceModalRef.$refs.modalRef.openModal();
     },
     openEditFeedModal(index) {
-      this.$refs.editFeedModalRef.$refs.modalRef.openModal()
+      this.$refs.editFeedModalRef.$refs.modalRef.openModal();
       this.$refs.editFeedModalRef.index = index;
       this.$refs.editFeedModalRef.name = this.feeds[index].name;
       this.$refs.editFeedModalRef.link = this.feeds[index].link;
     },
-    openDeleteFeedModal(index){
-      this.$refs.deleteFeedModalRef.$refs.modalRef.openModal()
+    openDeleteFeedModal(index) {
+      this.$refs.deleteFeedModalRef.$refs.modalRef.openModal();
       this.$refs.deleteFeedModalRef.name = this.feeds[index].name;
       this.$refs.deleteFeedModalRef.link = this.feeds[index].link;
       this.$refs.deleteFeedModalRef.index = index;
     }
   },
-  beforeMount() {
-    this.loadFeeds()
+  mounted() {
+    this.loadFeeds();
   }
 };
 </script>

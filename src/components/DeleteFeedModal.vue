@@ -16,7 +16,6 @@
 
     <template #buttons>
       <button type="submit" class="action-button" @click="deleteFeed">Delete</button>
-      <button type="button" class="action-button" @click="closeModal">Cancel</button>
     </template>
 
 

@@ -26,7 +26,6 @@
 
     <template #buttons>
       <button type="submit" class="action-button" @click="saveNewFeed">Save</button>
-      <button type="button" class="action-button" @click="closeModal">Cancel</button>
     </template>
 
 

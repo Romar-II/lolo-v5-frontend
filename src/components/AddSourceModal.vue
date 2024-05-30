@@ -26,7 +26,6 @@
 
     <template #buttons>
       <button type="submit" class="action-button" @click="saveNewFeed">Save</button>
-      <button type="button" class="action-button" @click="closeModal">Cancel</button>
     </template>
 
 
@@ -36,11 +35,12 @@
 
 <script>
 
-import router from "@/router";
+
 import Modal from "@/components/Modal.vue";
 
 
 export default {
+  emits: ['event-save-new-feed'],
   name: "AddSourceModal",
   components: {Modal},
   data() {

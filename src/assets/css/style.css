@@ -1,3 +1,12 @@
+/* General Reset and Basic Styling */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* App */
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -6,6 +15,7 @@
     color: #2c3e50;
 }
 
+/* Navigation */
 nav {
     padding: 30px;
 }
@@ -17,15 +27,6 @@ nav a {
 
 nav a.router-link-exact-active {
     color: #42b983;
-}
-
-
-/* General Reset and Basic Styling */
-body, html {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 /* Table Container */
@@ -157,7 +158,10 @@ body, html {
 }
 
 /* Input Boxes */
-input[type="text"], input[type="email"], input[type="password"], textarea {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -168,7 +172,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
     transition: border-color 0.3s;
 }
 
-input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus {
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
     border-color: #007bff;
     outline: none;
 }
@@ -185,9 +192,11 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
     transition: background-color 0.3s;
 }
 
+.submit-button:hover {
+    background-color: #0056b3;
+}
 
-
-/* Optional: Add styles for close button in modal */
+/* Modal Close Button */
 .modal-close {
     position: absolute;
     top: 10px;
@@ -198,14 +207,18 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
     cursor: pointer;
 }
 
- .text-danger {
-     color: red;
- }
+/* Danger Text */
+.text-danger {
+    color: red;
+}
 
+/* Filter Container */
 .filter-container {
     display: flex;
     align-items: center;
 }
+
+/* Text Container */
 .text-container {
     display: flex;
     flex-direction: column;
@@ -213,8 +226,8 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
     overflow: hidden;
 }
 
+/* Headline */
 .headline {
-
     padding: 8px;
     border-radius: 8px;
     max-height: 60%;
@@ -222,29 +235,37 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
     text-overflow: ellipsis;
 }
 
+/* Description Box */
 .description-box {
-
     padding: 8px;
     border-radius: 8px;
-    flex: 1; /* Fill remaining space */
-    overflow: hidden; /* Hide overflow */
+    flex: 1;
+    overflow: hidden;
 }
 
+/* Info Box */
 .info-box {
     padding: 8px;
     border-radius: 8px;
-
     bottom: 0;
 }
 
+/* Headings */
 h1 {
     font-size: 2em;
     margin-bottom: 0.5em;
 }
 
+h2 {
+    font-size: 1.2em;
+    margin: 0 0 0.5em 0;
+    color: #333;
+}
+
+/* Buttons */
 button {
     margin-bottom: 1em;
-    background-color: #007BFF;
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -256,12 +277,14 @@ button:hover {
     background-color: #0056b3;
 }
 
+/* News Grid */
 .news-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 16px;
 }
 
+/* News Item */
 .news-item {
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -281,92 +304,73 @@ button:hover {
     background-color: #e0f7fa;
 }
 
-.text-container {
+/* Text Container for News Items */
+.news-item .text-container {
     display: flex;
     flex-direction: column;
-    height: 100%; /* Ensure the text container fills the height */
+    height: 100%;
     padding: 16px;
-    background-color: transparent; /* Transparent background */
-    flex-grow: 1; /* Ensure it takes up available space */
+    background-color: transparent;
+    flex-grow: 1;
 }
 
-.headline {
+.news-item .headline {
     padding: 8px;
     border-radius: 8px;
-    flex-shrink: 0; /* Prevent headline from shrinking */
+    flex-shrink: 0;
 }
 
-.description-box {
+.news-item .description-box {
     padding: 8px;
     border-radius: 8px;
-    flex-grow: 1; /* Allow the description box to take up remaining space */
-    overflow: hidden; /* Hide overflow */
+    flex-grow: 1;
+    overflow: hidden;
 }
 
-.info-box {
+.news-item .info-box {
     padding: 8px;
     border-radius: 8px;
-    margin-top: auto; /* Push info box to the bottom */
-    flex-shrink: 0; /* Prevent info box from shrinking */
+    margin-top: auto;
+    flex-shrink: 0;
 }
 
+/* Content */
 .content {
     display: flex;
     flex-direction: column;
-    height: 100%; /* Ensure the content fills the height of the news item */
+    height: 100%;
 }
 
+/* Image Container */
 .image-container {
-    max-height: 30%; /* Limit image height to 30% of news item height */
+    max-height: 30%;
     width: auto;
     overflow: hidden;
 }
 
 img {
-    max-height: 100%; /* Ensure the image respects the container's max-height */
+    max-height: 100%;
     width: auto;
     border-radius: 8px;
 }
 
-.news-item {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.2s, background-color 0.2s;
-    max-height: 400px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.news-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #e0f7fa;
-}
-
-h2 {
-    font-size: 1.2em;
-    margin: 0 0 0.5em 0;
-    color: #333;
-}
-
+/* Description */
 .description {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Number of lines to show */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     margin: 0.5em 0;
 }
 
+/* Info */
 .info p {
     margin: 0.2em 0;
 }
 
+/* Links */
 a {
-    color: #007BFF;
+    color: #007bff;
     text-decoration: none;
 }

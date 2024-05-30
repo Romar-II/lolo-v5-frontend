@@ -1,9 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import FeedView from '@/views/FeedView.vue';
-import axios from 'axios';
-import { parseStringPromise } from 'xml2js';
-import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
 
 vi.mock('axios');

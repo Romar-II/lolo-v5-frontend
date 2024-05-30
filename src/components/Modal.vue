@@ -18,7 +18,9 @@
         <div class="modal-footer justify-content-center">
           <slot name="buttons">
             <!-- button -->
+            <button type="button" class="action-button" @click="closeModal">Cancel</button>
           </slot>
+          <button type="button" class="action-button" @click="closeModal">Cancel</button>
         </div>
       </div>
     </div>
