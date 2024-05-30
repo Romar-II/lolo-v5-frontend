@@ -3,7 +3,10 @@ import FeedView from "@/views/FeedView.vue";
 import FeedSettings from "@/views/FeedSettings.vue";
 
 const routes = [
-
+  {
+    path: '/',
+    redirect: '/feed'
+  },
   {
     path: '/feed',
     name: 'feed',
